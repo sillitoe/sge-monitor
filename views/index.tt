@@ -2,9 +2,9 @@
         <div id="page-header">
 					<h3>Useful links</h3>
 					<ul>
-						<li><a href="/qstat">Browse the status of the nodes</a></li>
-						<li><a href="/qstat#jobs-running">Browse the currently running tasks</a></li>
-						<li><a href="/qstat#jobs-pending">Browse the queued tasks</a></li>
+						<li><a href="/nodes">Browse the status of the nodes</a></li>
+						<li><a href="/jobs_running">Browse the currently running tasks</a></li>
+						<li><a href="/jobs_pending">Browse the queued tasks</a></li>
 					</ul>
         </div>
 
