@@ -7,7 +7,7 @@ appname: "SGE Monitor"
 
 # The default layout to use for your application (located in
 # views/layouts/main.tt)
-layout: "main"
+layout: "__base.tt"
 
 # when the charset is set to UTF-8 Dancer2 will handle for you
 # all the magic of encoding and decoding. You should not care
@@ -24,4 +24,9 @@ engines:
     template_toolkit:
       start_tag: '<%'
       end_tag:   '%>'
+      pre_process: 'layouts/__macro.tt'
 
+plugins:
+  'Cache::CHI':
+    driver: Memory
+    global: 1

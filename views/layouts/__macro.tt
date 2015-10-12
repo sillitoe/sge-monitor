@@ -1,0 +1,3 @@
+<% MACRO timeago( time ) BLOCK %>
+<abbr class="timeago" title="<% time %>"><% time %></abbr>
+<% END %>

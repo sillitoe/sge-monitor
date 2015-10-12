@@ -2,9 +2,12 @@ package SGE::Mon;
 use Dancer2;
 use Data::Dumper;
 use Dancer2::Plugin::Ajax;
+use Dancer2::Plugin::Cache::CHI;
 use XML::Simple qw( :strict );
 
 #set serializer => 'JSON';
+
+set layout => 'main';
 
 my $xs = XML::Simple->new();
 
@@ -14,15 +17,36 @@ get '/' => sub {
     template 'index';
 };
 
-get '/qstat' => sub {
+get '/nodes' => sub {
+		my $stash = get_qstat_all();
+		template nodes => $stash, { layout => 'monitor' };
+};
 
-    my $qstat_xml = `qstat -u '*' -f -xml`;
+get '/jobs_running' => sub {
+		my $stash = get_qstat_all();
+		template jobs_running => $stash, { layout => 'monitor' };
+};
 
-    my $qstat_ref = $xs->XMLin( $qstat_xml, KeyAttr => {}, ForceArray => [] );
+get '/jobs_pending' => sub {
+		my $stash = get_qstat_all();
+		template jobs_pending => $stash, { layout => 'monitor' };
+};
 
+sub get_qstat_all {
+		my $qstat_all = cache_get 'qstat_all';
+		if ( !$qstat_all ) {
+			$qstat_all = process_qstat_all();
+			cache_set 'qstat_all', $qstat_all;
+		}
+		return $qstat_all;
+}
+
+sub process_qstat_all {
+
+    my $qstat_xml    = `qstat -u '*' -f -xml`;
+    my $qstat_ref    = $xs->XMLin( $qstat_xml, KeyAttr => {}, ForceArray => [] );
     my $qstat_queues = $qstat_ref->{'queue_info'}->{'Queue-List'};
-
-    my $qstat_jobs = $qstat_ref->{'job_info'}->{'job_list'};
+    my $qstat_jobs   = $qstat_ref->{'job_info'}->{'job_list'};
 
     my @nodes;
     my @jobs_running;
@@ -47,6 +71,7 @@ get '/qstat' => sub {
             slots_resv  => $queue->{slots_resv},
             slots_total => $queue->{slots_total},
             qtype       => $queue->{qtype},
+						state       => $queue->{state},
           };
     }
 
@@ -65,13 +90,12 @@ get '/qstat' => sub {
           };
     }
 
-    template 'list_jobs.tt',
+		return
       {
         qstat        => $qstat_ref,
         nodes        => \@nodes,
         jobs_running => \@jobs_running,
         jobs_pending => \@jobs_pending,
-        config       => config,
       };
 };
 
@@ -98,5 +122,11 @@ ajax '/job/:job_id' => sub {
 
     to_json( \%job_data );
 };
+
+hook before_template_render => sub {
+	my $tokens = shift;
+	$tokens->{config} = config;
+};
+
 
 true;

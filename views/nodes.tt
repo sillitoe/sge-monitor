@@ -1,0 +1,40 @@
+<h2>HPC Nodes <small>(<% nodes.size %>)</small></h2>
+
+<table class="table table-condensed table-striped sortable">
+<thead>
+<tr>
+	<th>Name</th>
+	<th>Slots</th>
+	<th>Arch</th>
+	<th>Status</th>
+	<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<% FOREACH n IN nodes %>
+<% 
+	progress_pc = 100 * n.slots_used / n.slots_total; 
+	progress_css = 'success';
+%>
+<tr>
+	<td><% n.name %></td>
+	<td><% n.slots_used %> / <% n.slots_total %></td>
+	<td><% n.arch %></td>
+	<td><% IF n.state %><span class="label label-danger"><% n.state %></span><% END %></td>
+	<td class="progress">
+		<div class="progress">
+			<div class="progress-bar progress-bar-<% progress_css %>" 
+					role="progressbar" 
+					aria-valuenow="<% progress_pc | format '%d' %>" 
+					aria-valuemin="0" 
+					aria-valuemax="100" 
+					style="width: <% progress_pc %>%">
+				<span class="sr-only"><% progress_pc | format '%d' %>%</span>
+			</div>
+		</div>
+	</td>
+</tr>
+<% END %>
+</tbody>
+</table>
+	

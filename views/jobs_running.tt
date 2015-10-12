@@ -1,0 +1,29 @@
+<h2>Jobs Running <small>(<% jobs_running.size %>)</small></h2>
+
+<table class="table table-condensed table-striped sortable">
+<thead>
+<tr>
+	<th>Job</th>
+	<th>Name</th>
+	<th>Owner</th>
+	<th>Status</th>
+	<th>Started</th>
+	<th>Priority</th>
+	<th>Actions</th>
+</tr>
+</thead>
+<tbody>
+<% FOREACH j IN jobs_running %>
+<tr>
+	<td><% j.job_number %></td>
+	<td><% j.name %></td>
+	<td><% j.owner %></td>
+	<td><% j.state.join( ", " ) %></td>
+	<td><% timeago( j.start_time ) %></td>
+	<td><% j.priority %></td>
+	<td><button type="button" class="btn btn-info btn-sm" data-job-id="<% j.job_number %>" data-toggle="modal" data-target="#modal-job">
+		<span class="glyphicon glyphicon-search" aria-hidden="true"> </span> Preview</button></td>
+</tr>
+<% END %>
+</tbody>
+</table>
