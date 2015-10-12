@@ -1,0 +1,201 @@
+<style scoped>
+table td.progress {
+	width: 200px;
+}
+table td.progress .progress {
+	margin-bottom: 0;
+	height: 15px;
+}
+</style>
+
+<% USE Date %>
+<% MACRO timeago( time ) BLOCK %>
+<abbr class="timeago" title="<% time %>"><% time %></abbr>
+<% END %>
+
+<% tablecss = "table sortable table-condensed table-striped" %>
+
+<div>
+
+	<ul class="nav nav-tabs" role="tablist">
+		<li role="presentation" class="active"><a href="#nodes" aria-controls="nodes" role="tab" data-toggle="tab">Nodes</a></li>
+		<li role="presentation"><a href="#jobs-running" aria-controls="jobs-running" role="tab" data-toggle="tab">Jobs Running (<% jobs_running.size %>)</a></li>
+		<li role="presentation"><a href="#jobs-pending" aria-controls="jobs-pending" role="tab" data-toggle="tab">Jobs Pending (<% jobs_pending.size %>)</a></li>
+	</ul>
+
+	<div class="tab-content">
+		<div role="tabpanel" class="tab-pane active" id="nodes">
+
+<h2>HPC Nodes <small>(<% nodes.size %>)</small></h2>
+
+
+<table class="<% tablecss %>">
+<thead>
+<tr>
+	<th>Name</th>
+	<th>Slots</th>
+	<th>Arch</th>
+	<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<% FOREACH n IN nodes %>
+<% 
+	progress_pc = 100 * n.slots_used / n.slots_total; 
+	progress_css = '';
+	IF ( progress_pc < 90 );
+		progress_css = 'success';
+	ELSIF ( progress_pc <= 100 );
+		progress_css = 'warning';
+	END;
+	IF ( 0 );
+		progress_css = 'danger';
+	END;
+%>
+<tr>
+	<td><% n.name %></td>
+	<td><% n.slots_used %> / <% n.slots_total %></td>
+	<td><% n.arch %></td>
+	<td class="progress">
+		<div class="progress">
+			<div class="progress-bar progress-bar-<% progress_css %>" 
+					role="progressbar" 
+					aria-valuenow="<% progress_pc | format '%d' %>" 
+					aria-valuemin="0" 
+					aria-valuemax="100" 
+					style="width: <% progress_pc %>%">
+				<span class="sr-only"><% progress_pc | format '%d' %>%</span>
+			</div>
+		</div>
+	</td>
+</tr>
+<% END %>
+</tbody>
+</table>
+		
+		</div>
+		<div role="tabpanel" class="tab-pane" id="jobs-running">
+
+<h2>Jobs Running <small>(<% jobs_running.size %>)</small></h2>
+
+<table class="<% tablecss %>">
+<thead>
+<tr>
+	<th>Job</th>
+	<th>Name</th>
+	<th>Owner</th>
+	<th>Status</th>
+	<th>Started</th>
+	<th>Priority</th>
+	<th>Actions</th>
+</tr>
+</thead>
+<tbody>
+<% FOREACH j IN jobs_running %>
+<tr>
+	<td><% j.job_number %></td>
+	<td><% j.name %></td>
+	<td><% j.owner %></td>
+	<td><% j.state.join( ", " ) %></td>
+	<td><% timeago( j.start_time ) %></td>
+	<td><% j.priority %></td>
+	<td><button type="button" class="btn btn-info btn-sm" data-job-id="<% j.job_number %>" data-toggle="modal" data-target="#modal-job">
+		<span class="glyphicon glyphicon-search" aria-hidden="true"> </span> Preview</button></td>
+</tr>
+<% END %>
+</tbody>
+</table>
+		
+		</div>
+		<div role="tabpanel" class="tab-pane" id="jobs-pending">
+
+<h2>Jobs Pending <small>(<% jobs_pending.size %>)</small></h2>
+
+<table class="<% tablecss %>">
+<thead>
+<tr>
+	<th>Job</th>
+	<th>Name</th>
+	<th>Owner</th>
+	<th>Status</th>
+	<th>Submitted</th>
+	<th>Priority</th>
+	<th>Actions</th>
+</tr>
+</thead>
+<tbody>
+<% FOREACH j IN jobs_pending %>
+<tr>
+	<td><% j.job_number %></td>
+	<td><% j.name %></td>
+	<td><% j.owner %></td>
+	<td><% j.state.join( ", " ) %></td>
+	<td><% timeago( j.submission_time ) %></td>
+	<td><% j.priority %></td>
+	<td><button type="button" class="btn btn-info btn-sm" data-job-id="<% j.job_number %>" data-toggle="modal" data-target="#modal-job">
+		<span class="glyphicon glyphicon-search" aria-hidden="true"> </span> Preview</button></td>
+</tr>
+<% END %>
+</tbody>
+</table>
+
+		</div>
+
+	</div>
+
+</div>
+
+<div class="modal fade" id="modal-job" tabindex="-1" role="dialog" aria-labelledby="modal-job">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times</span></button>
+				<h4 class="modal-title">Example Job Title</h4>
+			</div>
+			<div class="modal-body">
+				Example job body
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<% USE Dumper %>
+<!--
+<pre>
+<% Dumper.dump( qstat ) %>
+</pre>
+-->
+
+<script>
+jQuery(function() {
+	$('#modal-job').on('show.bs.modal', function(event){
+		var button = $(event.relatedTarget);
+		var job_id = button.data('job-id');
+		var modal  = $(this);
+
+		modal.find('.modal-title').text( 'Job: ' + job_id );
+		modal.find('.modal-body').text( 'Loading...' );
+		$.ajax({ 
+			dataType: "json",
+			url: '/job/' + job_id, 
+			success: function(data) {
+				
+				var table = jQuery('<table class="table table-condensed table-striped table-keyvalue" />').append('<tbody />');
+				jQuery.each( data, function(key, value) { 
+					table.append( '<tr><td>' + key + '</td><td>' + value + '</td></tr>' );
+				});
+
+				console.log( "table: ", table );
+
+				modal.find('.modal-body').html( table );
+			}
+		});
+	})
+});
+</script>
+
+
