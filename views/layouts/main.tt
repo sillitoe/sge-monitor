@@ -1,5 +1,7 @@
 <% 
   DEFAULT	layout = 'layouts/__base.tt';
 
-	INCLUDE "$layout";
+  PROCESS 'layouts/__macro.tt';
+
+	PROCESS "$layout";
 %>

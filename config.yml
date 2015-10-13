@@ -24,7 +24,7 @@ engines:
     template_toolkit:
       start_tag: '<%'
       end_tag:   '%>'
-      pre_process: 'layouts/__macro.tt'
+      PRE_PROCESS: 'layouts/__macro.tt'
 
 plugins:
   'Cache::CHI':

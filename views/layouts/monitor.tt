@@ -24,10 +24,6 @@ table td.progress .progress {
   END;
 %>
 
-<% MACRO timeago( time ) BLOCK %>
-<abbr class="timeago" title="<% time %>"><% time %></abbr>
-<% END %>
-
 <div>
 
   <ul class="nav nav-tabs" role="tablist">
