@@ -18,18 +18,25 @@ get '/' => sub {
 };
 
 get '/nodes' => sub {
-    my $stash = get_qstat_all();
-    template nodes => $stash, { layout => 'monitor' };
+    template 'nodes', {}, { layout => 'monitor' };
 };
 
 get '/jobs_running' => sub {
-    my $stash = get_qstat_all();
-    template jobs_running => $stash, { layout => 'monitor' };
+    template 'jobs_running', {}, { layout => 'monitor' };
 };
 
 get '/jobs_pending' => sub {
-    my $stash = get_qstat_all();
-    template jobs_pending => $stash, { layout => 'monitor' };
+    template 'jobs_pending', {}, { layout => 'monitor' };
+};
+
+# add qstat and config to stash for all template pages
+hook before_template_render => sub {
+    my $tokens = shift;
+		my $qstat_data = get_qstat_all();
+		for my $key ( keys %$qstat_data ) {
+			$tokens->{$key} = $qstat_data->{ $key };
+		}
+    $tokens->{config} = config;
 };
 
 sub get_qstat_all {
@@ -52,14 +59,16 @@ sub get_qstat_all {
 sub process_qstat_all {
 
     my $qstat_xml = `qstat -u '*' -f -xml`;
-    my $qstat_ref = $xs->XMLin( $qstat_xml, KeyAttr => {}, ForceArray => [] );
-    my $qstat_queues = $qstat_ref->{'queue_info'}->{'Queue-List'};
-    my $qstat_jobs   = $qstat_ref->{'job_info'}->{'job_list'};
+    my $qstat_ref = $xs->XMLin( $qstat_xml, KeyAttr => {}, ForceArray => [ qr/list$/i ] );
+    my $qstat_queues = $qstat_ref->{'queue_info'}->{'Queue-List'} || [];
+    my $qstat_jobs   = $qstat_ref->{'job_info'}->{'job_list'} || [];
 
     my @nodes;
     my @jobs_running;
     for my $queue (@$qstat_queues) {
-        for my $job ( @{ $queue->{'job_list'} } ) {
+		    my $job_list = $queue->{'job_list'} || [];
+
+        for my $job ( @$job_list ) {
             push @jobs_running,
               {
                 owner      => $job->{JB_owner},
@@ -130,9 +139,5 @@ ajax '/job/:job_id' => sub {
     to_json( \%job_data );
 };
 
-hook before_template_render => sub {
-    my $tokens = shift;
-    $tokens->{config} = config;
-};
 
 true;
