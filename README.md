@@ -43,10 +43,6 @@ Direct your browser to [http://sgehost:5000](http://sgehost:5000)
 
 ![Job details](/resources/screenshot-jobs.png?raw=true "Screenshot of 'job detail' page")
 
-## Author
-
-Ian Sillitoe
-
 ## COPYRIGHT AND LICENSE
 
 This software is copyright (c) 2015 by Ian Sillitoe.
