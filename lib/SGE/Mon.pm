@@ -33,10 +33,17 @@ get '/jobs_pending' => sub {
 };
 
 sub get_qstat_all {
-		my $qstat_all = cache_get 'qstat_all';
+		my $cache_key = 'qstat_all';
+
+		my $qstat_all = cache_get $cache_key;
 		if ( !$qstat_all ) {
+			info "Failed to find cache key '$cache_key' in stash, creating data now...";
 			$qstat_all = process_qstat_all();
-			cache_set 'qstat_all', $qstat_all;
+			info "Storing qstat data in cache '$cache_key'";
+			cache_set $cache_key, $qstat_all;
+		}
+		else {
+			info "Retrieved qstat data from cache";
 		}
 		return $qstat_all;
 }
