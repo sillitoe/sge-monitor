@@ -1,0 +1,25 @@
+<%
+	sidebar_items = [
+		{ id => 'home',         path => '/',             text => 'Home' },
+		{ id => 'nodes',        path => '/nodes',        text => 'Nodes' },
+		{ id => 'jobs_running', path => '/jobs_running', text => 'Jobs running' },
+		{ id => 'jobs_pending', path => '/jobs_pending', text => 'Jobs pending' },
+	];
+%>
+
+<div class="bs-component">
+	<div class="panel panel-default">
+  	<div class="panel-heading">
+    	<h3 class="panel-section-title">Site Navigation</h3>
+    </div>
+    <div class="list-group table-of-contents">
+    	<% FOREACH item IN sidebar_items %>
+				<%
+					is_active = item.path == request.path ? 1 : 0;
+				%>
+				<a class="list-group-item <% is_active ? 'active' : '' %>" href="<% item.path %>"><% item.text %></a>
+			<% END %>
+    </div>
+  </div>
+</div>
+

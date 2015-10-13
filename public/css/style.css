@@ -7,6 +7,32 @@ body {
   padding-top: 50px;
 }
 
+.footer {
+	background-color: #333;
+	color: #999;
+	bottom: 0;
+	height: 50px;
+	position: fixed;
+	width: 100%;
+	z-index: 10;
+	padding: 10px;
+	text-align: right;
+}
+
+.footer .list-inline li:after { 
+	content: '|';
+	margin-left: 10px;
+	color: #666;
+}
+
+.footer .list-inline li:last-child:after {
+	content: '';
+}
+
+#page-container {
+	padding-bottom: 50px;
+}
+
 /*
  * Global add-ons
  */
@@ -20,10 +46,9 @@ h3.panel-section-title {
   padding: 0;
 	margin: 0;
 	font-size: 0.8em;
-	color: #999;
+	color: #aaa;
 	text-transform: uppercase;
 }
-
 
 .navbar-inverse {
 	background-color: #333;
@@ -53,7 +78,7 @@ h3.panel-section-title {
   .sidebar {
     position: fixed;
     top: 51px;
-    bottom: 0;
+    bottom: 60px;
     left: 0;
     z-index: 1000;
     display: block;
