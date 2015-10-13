@@ -2,20 +2,23 @@
 
 **Simple web-based application to monitor SGE activity**
 
-This project exists because I wanted a simple way of browsing activity on our local HPC cluster (running SGE)
-without having to do lots of typing (and scrolling through `qstat` output). There are undoubtably far more sophisticated and interactive tools to monitor SGE usage/activity - this is essentially just a wrapper around `qstat`.
+This project exists because I wanted a simple way of browsing our local HPC cluster (running SGE)
+without doing lots of typing. There are undoubtably far more sophisticated and interactive tools to monitor SGE usage/activity - current, this is nothing more than a wrapper around `qstat`.
 
 ## Requirements
 
  * Perl
- * Perl modules (Dancer2, XML::Simple, ... see Makefile.PL)
+ * Perl modules (Dancer2, XML::Simple, ... see Makefile.PL for full list)
  * `qstat`
 
 ## Install
 
-The following will try to install Perl modules from the CPAN (see note below).
+Move to a HPC node that has access to `qstat`
 
     $ ssh username@sgehost
+
+The following will try to install Perl modules from the CPAN (see note below).
+
     $ git clone https://github.com/sillitoe/sge-monitor
     $ cd sge-monitor
     $ perl Makefile.PL
@@ -34,9 +37,13 @@ Direct your browser to [http://sgehost:5000](http://sgehost:5000)
 
 ## Screenshots
 
+![Home](/resources/screenshot-home.png?raw=true "Screenshot of home page")
 
+![Nodes](/resources/screenshot-nodes.png?raw=true "Screenshot of 'nodes' page")
 
-## AUTHOR
+![Job details](/resources/screenshot-job-details.png?raw=true "Screenshot of 'jop detail' page")
+
+## Author
 
 Ian Sillitoe
 
