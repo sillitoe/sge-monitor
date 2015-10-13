@@ -31,10 +31,10 @@ get '/jobs_pending' => sub {
 # add qstat and config to stash for all template pages
 hook before_template_render => sub {
     my $tokens = shift;
-		my $qstat_data = get_qstat_all();
-		for my $key ( keys %$qstat_data ) {
-			$tokens->{$key} = $qstat_data->{ $key };
-		}
+    my $qstat_data = get_qstat_all();
+    for my $key ( keys %$qstat_data ) {
+        $tokens->{$key} = $qstat_data->{ $key };
+    }
     $tokens->{config} = config;
 };
 
