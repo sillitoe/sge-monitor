@@ -1,18 +1,17 @@
 package SGE::Mon;
 use Dancer2;
-use Data::Dumper;
 use Dancer2::Plugin::Ajax;
 use Dancer2::Plugin::Cache::CHI;
 use XML::Simple qw( :strict );
 
-#set serializer => 'JSON';
-
+# default template to use for pages
 set layout => 'main';
 
 my $xs = XML::Simple->new();
 
 our $VERSION = '0.1';
 
+# routes: define how we will respond to particular URLs
 get '/' => sub {
     template 'index';
 };
@@ -39,13 +38,13 @@ hook before_template_render => sub {
     $tokens->{config} = config;
 };
 
+# get qstat data from cache
 sub get_qstat_all {
     my $cache_key = 'qstat_all';
 
     my $qstat_all = cache_get $cache_key;
     if ( !$qstat_all ) {
-        info
-"Failed to find cache key '$cache_key' in stash, creating data now...";
+        info "Failed to find cache key '$cache_key' in stash, creating data now...";
         $qstat_all = process_qstat_all();
         info "Storing qstat data in cache '$cache_key'";
         cache_set $cache_key, $qstat_all;
@@ -56,6 +55,7 @@ sub get_qstat_all {
     return $qstat_all;
 }
 
+# parse information from qstat (XML)
 sub process_qstat_all {
 
     my $qstat_xml = `qstat -u '*' -f -xml`;
@@ -115,6 +115,7 @@ sub process_qstat_all {
     };
 }
 
+# return JSON data structure to describe job detail
 ajax '/job/:job_id' => sub {
     my $job_id = params->{job_id};
 
@@ -138,6 +139,5 @@ ajax '/job/:job_id' => sub {
 
     to_json( \%job_data );
 };
-
 
 true;
