@@ -18,40 +18,41 @@ get '/' => sub {
 };
 
 get '/nodes' => sub {
-		my $stash = get_qstat_all();
-		template nodes => $stash, { layout => 'monitor' };
+    my $stash = get_qstat_all();
+    template nodes => $stash, { layout => 'monitor' };
 };
 
 get '/jobs_running' => sub {
-		my $stash = get_qstat_all();
-		template jobs_running => $stash, { layout => 'monitor' };
+    my $stash = get_qstat_all();
+    template jobs_running => $stash, { layout => 'monitor' };
 };
 
 get '/jobs_pending' => sub {
-		my $stash = get_qstat_all();
-		template jobs_pending => $stash, { layout => 'monitor' };
+    my $stash = get_qstat_all();
+    template jobs_pending => $stash, { layout => 'monitor' };
 };
 
 sub get_qstat_all {
-		my $cache_key = 'qstat_all';
+    my $cache_key = 'qstat_all';
 
-		my $qstat_all = cache_get $cache_key;
-		if ( !$qstat_all ) {
-			info "Failed to find cache key '$cache_key' in stash, creating data now...";
-			$qstat_all = process_qstat_all();
-			info "Storing qstat data in cache '$cache_key'";
-			cache_set $cache_key, $qstat_all;
-		}
-		else {
-			info "Retrieved qstat data from cache";
-		}
-		return $qstat_all;
+    my $qstat_all = cache_get $cache_key;
+    if ( !$qstat_all ) {
+        info
+"Failed to find cache key '$cache_key' in stash, creating data now...";
+        $qstat_all = process_qstat_all();
+        info "Storing qstat data in cache '$cache_key'";
+        cache_set $cache_key, $qstat_all;
+    }
+    else {
+        info "Retrieved qstat data from cache";
+    }
+    return $qstat_all;
 }
 
 sub process_qstat_all {
 
-    my $qstat_xml    = `qstat -u '*' -f -xml`;
-    my $qstat_ref    = $xs->XMLin( $qstat_xml, KeyAttr => {}, ForceArray => [] );
+    my $qstat_xml = `qstat -u '*' -f -xml`;
+    my $qstat_ref = $xs->XMLin( $qstat_xml, KeyAttr => {}, ForceArray => [] );
     my $qstat_queues = $qstat_ref->{'queue_info'}->{'Queue-List'};
     my $qstat_jobs   = $qstat_ref->{'job_info'}->{'job_list'};
 
@@ -78,7 +79,7 @@ sub process_qstat_all {
             slots_resv  => $queue->{slots_resv},
             slots_total => $queue->{slots_total},
             qtype       => $queue->{qtype},
-						state       => $queue->{state},
+            state       => $queue->{state},
           };
     }
 
@@ -97,14 +98,13 @@ sub process_qstat_all {
           };
     }
 
-		return
-      {
+    return {
         qstat        => $qstat_ref,
         nodes        => \@nodes,
         jobs_running => \@jobs_running,
         jobs_pending => \@jobs_pending,
-      };
-};
+    };
+}
 
 ajax '/job/:job_id' => sub {
     my $job_id = params->{job_id};
@@ -131,9 +131,8 @@ ajax '/job/:job_id' => sub {
 };
 
 hook before_template_render => sub {
-	my $tokens = shift;
-	$tokens->{config} = config;
+    my $tokens = shift;
+    $tokens->{config} = config;
 };
-
 
 true;
