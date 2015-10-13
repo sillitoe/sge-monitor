@@ -9,9 +9,9 @@ $eumm_version =~ s/_//;
 
 WriteMakefile(
     NAME                => 'SGE::Mon',
-    AUTHOR              => q{YOUR NAME <youremail@example.com>},
+    AUTHOR              => q{IAN SILLITOE <i.sillitoe@ucl.ac.uk>},
     VERSION_FROM        => 'lib/SGE/Mon.pm',
-    ABSTRACT            => 'YOUR APPLICATION ABSTRACT',
+    ABSTRACT            => 'Simple web-based app to monitor SGE jobs',
     ($eumm_version >= 6.3001
       ? ('LICENSE'=> 'perl')
       : ()),
@@ -20,6 +20,8 @@ WriteMakefile(
         'Test::More' => 0,
         'YAML'       => 0,
         'Dancer2'     => 0.162000,
+				'Dancer2::Plugin::Ajax' => 0,
+				'Dancer2::Plugin::Cache::CHI' => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'SGE-Mon-*' },
