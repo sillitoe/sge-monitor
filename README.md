@@ -41,7 +41,7 @@ Direct your browser to [http://sgehost:5000](http://sgehost:5000)
 
 ![Nodes](/resources/screenshot-nodes.png?raw=true "Screenshot of 'nodes' page")
 
-![Job details](/resources/screenshot-job-details.png?raw=true "Screenshot of 'jop detail' page")
+![Job details](/resources/screenshot-jobs.png?raw=true "Screenshot of 'job detail' page")
 
 ## Author
 
