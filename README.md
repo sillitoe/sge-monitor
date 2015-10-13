@@ -1,8 +1,6 @@
-# sge-monitor
+# SGE Monitor
 
-Simple web-based application to monitor SGE activity
-
-## About
+**Simple web-based application to monitor SGE activity**
 
 This project exists because I wanted a simple way of browsing activity on our local HPC cluster (running SGE)
 without having to do lots of typing (and scrolling through `qstat` output). There are undoubtably far more sophisticated and interactive tools to monitor SGE usage/activity - this is essentially just a wrapper around `qstat`.
@@ -17,7 +15,7 @@ without having to do lots of typing (and scrolling through `qstat` output). Ther
 
 The following will try to install Perl modules from the CPAN (see note below).
 
-    $ ssh username@yoursgehost
+    $ ssh username@sgehost
     $ git clone https://github.com/sillitoe/sge-monitor
     $ cd sge-monitor
     $ perl Makefile.PL
@@ -32,10 +30,18 @@ Start the server...
     $ plackup -r bin/app.psgi
     HTTP::Server::PSGI: Accepting connections at http://0:5000/
 
-Direct your browser to:
-
-  http://yoursgehost:5000
+Direct your browser to [http://sgehost:5000](http://sgehost:5000)
 
 ## Screenshots
 
 
+
+## AUTHOR
+
+Ian Sillitoe
+
+## COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2015 by Ian Sillitoe.
+
+This is free software; you can redistribute it and/or modify it under the same terms as the Perl 5 programming language system itself.
