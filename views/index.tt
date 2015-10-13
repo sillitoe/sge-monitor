@@ -1,6 +1,6 @@
 
         <div id="page-header">
-					<h3>Useful links</h3>
+					<h3>Quick Links</h3>
 					<ul>
 						<li><a href="/nodes">Browse the status of the nodes</a></li>
 						<li><a href="/jobs_running">Browse the currently running tasks</a></li>
@@ -49,5 +49,15 @@
                 </tbody>
             </table>
           </div>
+			    
+					<h3>Software driving this application</h3>
+					<ul>
+						<li><a href="https://github.com/sillitoe/sge-monitor">sge-monitor</a> - source code on GitHub</li>
+						<li><a href="http://perldancer.org/">Dancer2</a> - Lightweight, yet simple web application framework (Perl)</li>
+						<li><a href="http://getbootstrap.com/">Bootstrap</a> - CSS/Javascript framework for HTML</li>
+						<li><a href="https://bootswatch.com/">Bootswatch</a> - Free Bootstrap themes</li>
+						<li><a href="https://www.datatables.net/">DataTables</a> - Table plugin for jQuery</li>
+						<li><a href="http://timeago.yarp.com/">TimeAgo</a> - Timestamp plugin for jQuery</li>
+					</ul>
 		</div>
 
