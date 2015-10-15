@@ -3,7 +3,7 @@
 **Simple web-based application to monitor SGE activity**
 
 This project exists because I wanted a simple way of browsing our local HPC cluster (running SGE)
-without doing lots of typing. There are undoubtably far more sophisticated and interactive tools to monitor SGE usage/activity - currently, this is nothing more than a wrapper converting `qstat` output into web pages.
+without doing lots of typing. There are undoubtably far more sophisticated and interactive tools to monitor SGE usage/activity (I failed to find anything that installed easily). Currently, this is nothing more than a wrapper converting `qstat` output into web pages.
 
 ## Requirements
 
