@@ -30,3 +30,4 @@ plugins:
   'Cache::CHI':
     driver: Memory
     global: 1
+    honor_no_cache: 1
