@@ -1,16 +1,17 @@
 package SGE::Mon;
 use Dancer2;
-use Data::Dumper;
 use Dancer2::Plugin::Ajax;
 use Dancer2::Plugin::Cache::CHI;
 use XML::Simple qw( :strict );
 
+# default template to use for pages
 set layout => 'main';
 
 my $xs = XML::Simple->new();
 
 our $VERSION = '0.1';
 
+# routes: define how we will respond to particular URLs
 get '/' => sub {
     template 'index';
 };
@@ -29,23 +30,24 @@ get '/jobs_pending' => sub {
 
 # add qstat and config to stash for all template pages
 hook before_template_render => sub {
-    my $tokens = shift;
-		
+    my $tokens = shift;		
 		my $nocache = param "nocache" || 0;
 		my $qstat_data = get_qstat_all( nocache => $nocache );
 
-		for my $key ( keys %$qstat_data ) {
-			$tokens->{$key} = $qstat_data->{ $key };
-		}
+    for my $key ( keys %$qstat_data ) {
+        $tokens->{$key} = $qstat_data->{ $key };
+    }
     $tokens->{config} = config;
 };
 
+# get qstat data from cache
 sub get_qstat_all {
 		my %params = @_; 
 		my $nocache = defined $params{nocache} ? $params{nocache} : 0;
     my $cache_key = 'qstat_all';
 
     my $qstat_all = cache_get $cache_key;
+
     if ( !$qstat_all || $nocache ) {
 				if ( !$qstat_all ) {
         	info "Failed to find cache key '$cache_key' in stash, creating data now...";
@@ -63,6 +65,7 @@ sub get_qstat_all {
     return $qstat_all;
 }
 
+# parse information from qstat (XML)
 sub process_qstat_all {
 
     my $qstat_xml = `qstat -u '*' -f -xml`;
@@ -123,6 +126,7 @@ sub process_qstat_all {
     };
 }
 
+# return JSON data structure to describe job detail
 ajax '/job/:job_id' => sub {
     my $job_id = params->{job_id};
 
@@ -146,6 +150,5 @@ ajax '/job/:job_id' => sub {
 
     to_json( \%job_data );
 };
-
 
 true;
