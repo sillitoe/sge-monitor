@@ -5,8 +5,6 @@ use Dancer2::Plugin::Ajax;
 use Dancer2::Plugin::Cache::CHI;
 use XML::Simple qw( :strict );
 
-#set serializer => 'JSON';
-
 set layout => 'main';
 
 my $xs = XML::Simple->new();
@@ -32,7 +30,10 @@ get '/jobs_pending' => sub {
 # add qstat and config to stash for all template pages
 hook before_template_render => sub {
     my $tokens = shift;
-		my $qstat_data = get_qstat_all();
+		
+		my $nocache = param "nocache" || 0;
+		my $qstat_data = get_qstat_all( nocache => $nocache );
+
 		for my $key ( keys %$qstat_data ) {
 			$tokens->{$key} = $qstat_data->{ $key };
 		}
@@ -40,13 +41,19 @@ hook before_template_render => sub {
 };
 
 sub get_qstat_all {
+		my %params = @_; 
+		my $nocache = defined $params{nocache} ? $params{nocache} : 0;
     my $cache_key = 'qstat_all';
 
     my $qstat_all = cache_get $cache_key;
-    if ( !$qstat_all ) {
-        info
-"Failed to find cache key '$cache_key' in stash, creating data now...";
-        $qstat_all = process_qstat_all();
+    if ( !$qstat_all || $nocache ) {
+				if ( !$qstat_all ) {
+        	info "Failed to find cache key '$cache_key' in stash, creating data now...";
+        }
+				else {
+					info "Requested cache refresh";
+				}
+				$qstat_all = process_qstat_all();
         info "Storing qstat data in cache '$cache_key'";
         cache_set $cache_key, $qstat_all;
     }
@@ -108,6 +115,7 @@ sub process_qstat_all {
     }
 
     return {
+        timestamp    => "" . localtime,
         qstat        => $qstat_ref,
         nodes        => \@nodes,
         jobs_running => \@jobs_running,

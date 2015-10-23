@@ -24,6 +24,12 @@ table td.progress .progress {
   END;
 %>
 
+<div class="status">
+	<p class="pull-right">Last checked <% timeago(timestamp) %>
+	<a href="?nocache=1" class="btn btn-link">Refresh</a>
+	</p>
+</div>
+
 <div>
 
   <ul class="nav nav-tabs" role="tablist">
