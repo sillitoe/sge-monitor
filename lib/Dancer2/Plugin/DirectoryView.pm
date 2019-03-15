@@ -8,6 +8,7 @@ Dancer2::Plugin::DirectoryView - Browse directory contents in Dancer web apps
 
 use strict;
 use warnings;
+use Carp qw/ croak /;
 
 use Dancer2::Plugin;
 use Dancer2::Core::MIME;
@@ -28,7 +29,7 @@ our $VERSION = '0.02';
 plugin_keywords 'directory_view';
 
 # Distribution-level shared data directory
-my $dist_dir = File::ShareDir::dist_dir('Dancer-Plugin-DirectoryView');
+my $dist_dir = undef; # File::ShareDir::dist_dir('Dancer-Plugin-DirectoryView');
 
 my $path_prefix = '/dancer-directory-view';
 # Need a leading slash
@@ -42,18 +43,18 @@ my $builtin_tpl = {};
 
 sub directory_view {
 	my $self = shift;
-  return $self->_serve_files(@_);
+    return $self->_serve_files(@_);
 }
 
-sub _serve_files {    
-		my $plugin = shift;
-		my $app = $plugin->app;
+sub _serve_files {
+    my $plugin = shift;
+    my $app = $plugin->app;
     my (%options) = @_;
     
     # Root directory
     my $root_dir = $options{root_dir} || '.';
-		# Root URL (assume current directory)
-		my $root_url = $options{root_url} || '';
+    # Root URL (assume current directory)
+    my $root_url = $options{root_url} || '';
     # Are system paths allowed?
     my $system_path = $options{system_path} || 0;
     # Template to use (if set to 0, a primitive built-in template is used)
@@ -188,11 +189,12 @@ sub _serve_files {
                 $template_dir = catfile($views_dir, $template);
             }
             # Then, try the plugin's views directory
-            elsif (-d catfile($dist_dir, 'views', $template)) {
+            elsif ($dist_dir && -d catfile($dist_dir, 'views', $template)) {
                 $template_dir = catfile($dist_dir, 'views', $template);
             }
             else {
                 # TODO: Template not found -- handle error
+                croak "failed to find template directory";
             }
             
             my $file_tpl = catfile($template_dir, 'file.tt');
