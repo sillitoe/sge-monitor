@@ -2,6 +2,8 @@ package SGE::Mon::Util;
 
 use strict;
 use warnings;
+use Carp qw/ croak /;
+
 use XML::Simple qw( :strict );
 use namespace::autoclean;
 
@@ -71,7 +73,7 @@ sub parse_qstat_all {
 sub parse_qstat_job {
   my $job_id = shift;
 
-  $job_id =~ m/^[0-9a-ZA-Z]+$/
+  $job_id =~ m/^[0-9a-zA-Z]+$/
     or croak "! Error: string '$job_id' does not look like a valid job ID";
 
   my $qstat_xml = `qstat -j $job_id -xml`;
