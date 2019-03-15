@@ -22,6 +22,7 @@ WriteMakefile(
         'Dancer2'     => 0.162000,
 				'Dancer2::Plugin::Ajax' => 0,
 				'Dancer2::Plugin::Cache::CHI' => 0,
+        'XML::Simple' => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'SGE-Mon-*' },
